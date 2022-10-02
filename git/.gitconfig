@@ -1,0 +1,155 @@
+[include]
+  # secrets
+  path = ~/.gitconfig.local
+[core]
+  editor = nvim
+  excludesfile = ~/.gitignore_global
+[branch]
+  mergeoptions = no-ff
+  autosetupmerge = always
+  autosetuprebase = always
+[pull]
+  rebase = true
+[color]
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  ui = auto
+[rebase]
+	autosquash = true
+  autoStash = true
+[alias]
+  co    = checkout
+  cob   = checkout -b
+  lol   = log --pretty=oneline --abbrev-commit --graph --decorate
+  st    = status -sb
+  graph = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+
+  lg    = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
+
+  addw  = "!git diff -w --no-color | git apply --cached --ignore-whitespace"
+
+  prc = "!hub -c core.commentChar='%' pull-request"
+
+  pf = push --force-with-lease
+
+  # commiting
+  c     = commit -m
+  ca    = commit --amend
+  cf    = commit --fixup
+  # make a fixup commit for the last time the file was modified
+  cff   = "!f() { [ -n $@ ] && git add $@ && git commit --fixup $(git last-sha $@); }; f"
+  # use fixup.py script to auto-detect last commit for each staged file
+  fu = fixup.py
+
+  # rebasing
+  rb = rebase
+  rbm = rebase --interactive master
+  rbi = rebase --interactive
+  rbc = rebase --continue
+  rba = rebase --abort
+  # Rebase commits on current branch, without adding in new commits from master
+  rbb = "!git rebase -i `git merge-base master HEAD`"
+
+  # Show branches in order of recently modified first
+  bs = "!git for-each-ref refs/heads --color=always --sort -committerdate --format='%(HEAD)%(color:reset);%(color:yellow)%(refname:short)%(color:reset);%(contents:subject);%(color:green)(%(committerdate:relative))%(color:blue);<%(authorname)>' | column -t -s ';'"
+
+  # Show commit message with git show
+  sho = show --pretty=full
+  #
+  # Working with branches
+  #
+
+  # Get latest sha for file(s)
+  last-sha = log -n1 --pretty=format:%h --grep 'fixup!' --invert-grep
+  # Get the current branch name (not so useful in itself, but used in
+  # other aliases)
+  branch-name = "!git rev-parse --abbrev-ref HEAD"
+  # Push the current branch to the remote "origin", and set it to track
+  # the upstream branch
+  publish = "!git push -u origin $(git branch-name):$(git branch-name)"
+  # Delete the remote version of the current branch
+  unpublish = "!git push origin :$(git branch-name)"
+  # Delete a branch and recreate it from master — useful if you have, say,
+  # a development branch and a master branch and they could conceivably go
+  # out of sync
+  recreate = "!f() { [[ -n $@ ]] && git checkout \"$@\" && git unpublish && git checkout master && git branch -D \"$@\" && git checkout -b \"$@\" && git publish; }; f"
+
+  # Given a merge commit, find the span of commits that exist(ed) on that
+  # branch. Again, not so useful in itself, but used by other aliases.
+  merge-span = "!f() { echo $(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f1)$1$(git log -1 $2 --merges --pretty=format:%P | cut -d' ' -f2); }; f"
+
+  # Find the commits that were introduced by a merge
+  merge-log = "!git log `git merge-span .. $1`"
+  # Show the changes that were introduced by a merge
+  merge-diff = "!git diff `git merge-span ... $1`"
+  # As above, but in your difftool
+  merge-difftool = "!git difftool `git merge-span ... $1`"
+
+
+  #
+  # Working with files
+  #
+
+  # Unstage any files that have been added to the staging area
+  unstage = reset HEAD
+  # Show changes that have been staged
+  diffc = diff --cached
+
+  # Mark a file as "assume unchanged", which means that Git will treat it
+  # as though there are no changes to it even if there are. Useful for
+  # temporary changes to tracked files
+  assume = update-index --assume-unchanged
+  # Reverse the above
+  unassume = update-index --no-assume-unchanged
+  # Show the files that are currently assume-unchanged
+  assumed = "!git ls-files -v | grep ^h | cut -c 3-"
+
+  # Checkout our version of a file and add it
+  ours = "!f() { git checkout --ours $@ && git add $@; }; f"
+  # Checkout their version of a file and add it
+  theirs = "!f() { git checkout --theirs $@ && git add $@; }; f"
+
+  # Delete any branches that have been merged into current branch
+  # See also: https://gist.github.com/robmiller/5133264
+  cleanup-branches = "!git branch --merged | grep -v '\\*' | xargs git branch -d"
+
+[format]
+  pretty = %C(magenta reverse)%h%Creset %Cgreen[%cr]%Creset (%an) %s
+[diff]
+  # For Github-style word diffs
+  wordRegex = [^[:space:]]
+[status]
+  submodulesummary = true
+[apply]
+  whitespace = fix
+[color "status"]
+  changed = yellow
+  added = green
+  untracked = red
+[push]
+  default = simple
+[user]
+  name = JF Lalonde
+  email = lalondej88@gmail.com
+  signingkey = 5BDEBB0ADB2A3F46
+[filter "lfs"]
+  clean = git lfs clean %f
+  smudge = git lfs smudge %f
+  required = true
+[commit]
+  gpgsign = false
+[fetch]
+  prune = true
+[rerere]
+  enabled = true
+  autoUpdate = true
+[gpg]
+  program = gpg2
+[pager]
+  branch = false
+[merge]
+	conflictStyle = diff3
+[init]
+	defaultBranch = main
