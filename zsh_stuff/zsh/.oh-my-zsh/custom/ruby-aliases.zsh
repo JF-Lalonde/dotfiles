@@ -1,0 +1,6 @@
+alias be="bundle exec"
+alias s="bundle exec rspec"
+alias rc="rails console"
+alias rs="rails server"
+alias tstlog="tail -f log/test.log"
+alias devlog="tail -f log/development.log"
