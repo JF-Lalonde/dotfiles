@@ -150,6 +150,6 @@
 [pager]
   branch = false
 [merge]
-	conflictStyle = diff3
+  conflictStyle = diff3
 [init]
-	defaultBranch = main
+  defaultBranch = main
