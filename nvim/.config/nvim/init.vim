@@ -29,6 +29,7 @@ command! Qa qa " Bind :Qa to :qa
 
 " Use older vim.fugitive syntax
 command Gbla Git blame
+command Gbro GBrowse
 
 set wildignore+=*/node_modules/* " Don't search inside Node.js modules
 
