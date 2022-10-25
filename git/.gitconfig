@@ -17,7 +17,7 @@
   interactive = auto
   ui = auto
 [rebase]
-	autosquash = true
+  autosquash = true
   autoStash = true
 [alias]
   co    = checkout
